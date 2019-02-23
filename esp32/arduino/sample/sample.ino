@@ -7,7 +7,7 @@
 #define DEVICE_NAME "LINE Things Trial ESP32"
 
 // User service UUID: Change this to your generated service UUID
-#define USER_SERVICE_UUID "91E4E176-D0B9-464D-9FE4-52EE3E9F1552"
+#define USER_SERVICE_UUID "180ceb9c-07a3-4f06-95e7-7927579f2c7c"
 // User service characteristics
 #define WRITE_CHARACTERISTIC_UUID "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B"
 #define NOTIFY_CHARACTERISTIC_UUID "62FBD229-6EDD-4D1A-B554-5C4E1BB29169"
@@ -15,6 +15,8 @@
 // PSDI Service UUID: Fixed value for Developer Trial
 #define PSDI_SERVICE_UUID "E625601E-9E55-4597-A598-76018A0D293D"
 #define PSDI_CHARACTERISTIC_UUID "26E2B12B-85F0-4F3F-9FDD-91D114270E6E"
+
+#define READ_CHARACTERISTIC_UUID "41ec984b-3375-43cf-944a-08a5cb565cbc"
 
 #define BUTTON 0
 #define LED1 2
@@ -117,6 +119,10 @@ void setupServices(void) {
   psdiService = thingsServer->createService(PSDI_SERVICE_UUID);
   psdiCharacteristic = psdiService->createCharacteristic(PSDI_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
   psdiCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
+
+  readCharacteristic = userService->createCharacteristic(READ_CHARACTERIC_UUID, BLECharacteristic::PROPERTY_READ);
+  readCharacteristic = setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
+  readCharacteristic = setValue(0); // 0で初期化
 
   // Set PSDI (Product Specific Device ID) value
   uint64_t macAddress = ESP.getEfuseMac();
