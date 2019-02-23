@@ -28,6 +28,7 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
+BLECharacteristic* readCharacteristic;
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
@@ -65,6 +66,7 @@ void setup() {
 
   // Security Settings
   BLESecurity *thingsSecurity = new BLESecurity();
+  thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
   thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_ONLY);
   thingsSecurity->setCapability(ESP_IO_CAP_NONE);
   thingsSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
@@ -73,6 +75,8 @@ void setup() {
   startAdvertising();
   Serial.println("Ready to Connect");
 }
+
+int btnCount = 0;
 
 void loop() {
   uint8_t btnValue;
@@ -93,6 +97,10 @@ void loop() {
   // Connection
   if (deviceConnected && !oldDeviceConnected) {
     oldDeviceConnected = deviceConnected;
+  }
+  if (btnValue) {
+    btnCount++;
+    readCharacteristic->setValue(btnCount);
   }
 }
 
@@ -120,9 +128,9 @@ void setupServices(void) {
   psdiCharacteristic = psdiService->createCharacteristic(PSDI_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
   psdiCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
 
-  readCharacteristic = userService->createCharacteristic(READ_CHARACTERIC_UUID, BLECharacteristic::PROPERTY_READ);
-  readCharacteristic = setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
-  readCharacteristic = setValue(0); // 0で初期化
+  readCharacteristic = userService->createCharacteristic(READ_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
+  readCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
+  readCharacteristic->setValue(0); // とりあえず 0 で初期化
 
   // Set PSDI (Product Specific Device ID) value
   uint64_t macAddress = ESP.getEfuseMac();
