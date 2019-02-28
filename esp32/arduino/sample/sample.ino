@@ -4,7 +4,7 @@
 #include <BLE2902.h>
 
 // Device Name: Maximum 30 bytes
-#define DEVICE_NAME "LINE Things Trial ESP32"
+#define DEVICE_NAME "Tomoya LINE THINGS BLE"
 
 // User service UUID: Change this to your generated service UUID
 #define USER_SERVICE_UUID "180ceb9c-07a3-4f06-95e7-7927579f2c7c"
@@ -16,8 +16,6 @@
 #define PSDI_SERVICE_UUID "E625601E-9E55-4597-A598-76018A0D293D"
 #define PSDI_CHARACTERISTIC_UUID "26E2B12B-85F0-4F3F-9FDD-91D114270E6E"
 
-#define READ_CHARACTERISTIC_UUID "41ec984b-3375-43cf-944a-08a5cb565cbc"
-
 #define BUTTON 0
 #define LED1 2
 
@@ -28,7 +26,6 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
-BLECharacteristic* readCharacteristic;
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
@@ -66,7 +63,6 @@ void setup() {
 
   // Security Settings
   BLESecurity *thingsSecurity = new BLESecurity();
-  thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
   thingsSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_ONLY);
   thingsSecurity->setCapability(ESP_IO_CAP_NONE);
   thingsSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
@@ -75,8 +71,6 @@ void setup() {
   startAdvertising();
   Serial.println("Ready to Connect");
 }
-
-int btnCount = 0;
 
 void loop() {
   uint8_t btnValue;
@@ -97,10 +91,6 @@ void loop() {
   // Connection
   if (deviceConnected && !oldDeviceConnected) {
     oldDeviceConnected = deviceConnected;
-  }
-  if (btnValue) {
-    btnCount++;
-    readCharacteristic->setValue(btnCount);
   }
 }
 
@@ -127,10 +117,6 @@ void setupServices(void) {
   psdiService = thingsServer->createService(PSDI_SERVICE_UUID);
   psdiCharacteristic = psdiService->createCharacteristic(PSDI_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
   psdiCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
-
-  readCharacteristic = userService->createCharacteristic(READ_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
-  readCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
-  readCharacteristic->setValue(0); // とりあえず 0 で初期化
 
   // Set PSDI (Product Specific Device ID) value
   uint64_t macAddress = ESP.getEfuseMac();
