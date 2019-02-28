@@ -30,7 +30,10 @@ BLECharacteristic* notifyCharacteristic;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
+// グローバル変数でbutton_actionを設定
 volatile int btnAction = 0;
+
+int clickNum = 0;
 
 class serverCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -42,6 +45,8 @@ class serverCallbacks: public BLEServerCallbacks {
   }
 };
 
+// ここで,セントラルから送られてきた値を取得している。
+// 具体的には、LEDライトのON OFFの値を取得。
 class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
     std::string value = bleWriteCharacteristic->getValue();
@@ -54,8 +59,13 @@ class writeCallback: public BLECharacteristicCallbacks {
 void setup() {
   Serial.begin(115200);
 
+  // pinModeは、ピンの動作を入力か、出力かに設定する。
+  // 出力に設定
   pinMode(LED1, OUTPUT);
+  // 入力・出力に設定
   pinMode(BUTTON, INPUT_PULLUP);
+  // 外部割り込みが発生した際に実行する関数を指定する
+  // CHANGEは、buttonの状態が変化した際に発生
   attachInterrupt(BUTTON, buttonAction, CHANGE);
 
   BLEDevice::init("");
@@ -77,8 +87,11 @@ void loop() {
 
   while (btnAction > 0 && deviceConnected) {
     btnValue = !digitalRead(BUTTON);
+    Serial.println(btnValue);
     btnAction = 0;
+    // デバイス側のボタンが押された時に、notifyで送るバリューを設定している
     notifyCharacteristic->setValue(&btnValue, 1);
+    // 実際にnotifyを実行する
     notifyCharacteristic->notify();
     delay(20);
   }
@@ -102,10 +115,13 @@ void setupServices(void) {
   // Setup User Service
   userService = thingsServer->createService(USER_SERVICE_UUID);
   // Create Characteristics for User Service
+
+  // writeのcharacteristic
   writeCharacteristic = userService->createCharacteristic(WRITE_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_WRITE);
   writeCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   writeCharacteristic->setCallbacks(new writeCallback());
-
+  
+  // notifyのcharateristic
   notifyCharacteristic = userService->createCharacteristic(NOTIFY_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_NOTIFY);
   notifyCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   BLE2902* ble9202 = new BLE2902();
