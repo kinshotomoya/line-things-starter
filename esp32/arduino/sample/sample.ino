@@ -16,6 +16,8 @@
 #define PSDI_SERVICE_UUID "e625601e-9e55-4597-a598-76018a0d293d"
 #define PSDI_CHARACTERISTIC_UUID "26E2B12B-85F0-4F3F-9FDD-91D114270E6E"
 
+#define READ_CHARACTERISTIC_UUID "af930343-cc42-4b47-80e3-b47a6b585d26"
+
 #define BUTTON 0
 #define LED1 2
 
@@ -26,6 +28,7 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
+BLECharacteristic* readCharacteristic;
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
@@ -33,7 +36,7 @@ bool oldDeviceConnected = false;
 // グローバル変数でbutton_actionを設定
 volatile int btnAction = 0;
 
-int clickNum = 0;
+int btnCount = 0;
 
 class serverCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -87,6 +90,7 @@ void loop() {
 
   while (btnAction > 0 && deviceConnected) {
     btnValue = !digitalRead(BUTTON);
+    // ボタンが押されたときは、btnValue==1、話したときは0
     Serial.println(btnValue);
     btnAction = 0;
     // デバイス側のボタンが押された時に、notifyで送るバリューを設定している
@@ -94,6 +98,14 @@ void loop() {
     // 実際にnotifyを実行する
     notifyCharacteristic->notify();
     delay(20);
+
+    // btnValueが1のとき（ボタンが押されているとき）に実行される
+    if(btnValue) {
+      btnCount++;
+      Serial.println(btnCount);
+      // LIFFから読み込むためのバリューを設定
+      readCharacteristic->setValue(btnCount);
+    }
   }
   // Disconnection
   if (!deviceConnected && oldDeviceConnected) {
@@ -116,18 +128,23 @@ void setupServices(void) {
   userService = thingsServer->createService(USER_SERVICE_UUID);
   // Create Characteristics for User Service
 
-  // writeのcharacteristic
+  // writeのcharacteristicを設定
   writeCharacteristic = userService->createCharacteristic(WRITE_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_WRITE);
   writeCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   writeCharacteristic->setCallbacks(new writeCallback());
   
-  // notifyのcharateristic
+  // notifyのcharateristicを設定
   notifyCharacteristic = userService->createCharacteristic(NOTIFY_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_NOTIFY);
   notifyCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   BLE2902* ble9202 = new BLE2902();
   ble9202->setNotifications(true);
   ble9202->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   notifyCharacteristic->addDescriptor(ble9202);
+
+  // readのcharacteristicを設定
+  readCharacteristic = userService->createCharacteristic(READ_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
+  readCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
+  readCharacteristic->setValue(0); // とりあえず0で初期化
 
   // Setup PSDI Service
   psdiService = thingsServer->createService(PSDI_SERVICE_UUID);

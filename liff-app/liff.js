@@ -8,6 +8,8 @@ const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
 const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 
+const READ_SERVICE_UUID = 'af930343-cc42-4b47-80e3-b47a6b585d26';
+
 // UI settings
 let ledState = false; // true: LED on, false: LED off
 let clickCount = 0;
@@ -221,6 +223,16 @@ function liffGetUserService(service) {
 
         // Switch off by default
         liffToggleDeviceLedState(false);
+    }).catch(error => {
+        uiStatusError(makeErrorMsg(error), false);
+    });
+
+    // readCharactericのデータを読みに行く処理
+    service.getCharacteristic(READ_SERVICE_UUID).then(characteristic => {
+        return characteristic.readValue();
+    }).then(value => {
+        const value = new DataView(value.buffer).getInt32(0, true);
+        document.getElementById("total-count").innerText = value;
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
