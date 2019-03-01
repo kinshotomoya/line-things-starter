@@ -136,7 +136,6 @@ function initializeApp() {
 }
 
 function initializeLiff() {
-    alert('DDDDDDDD');
     liff.initPlugins(['bluetooth']).then(() => {
         liffCheckAvailablityAndDo(() => liffRequestDevice());
     }).catch(error => {
@@ -260,7 +259,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     characteristic.startNotifications().then(() => {
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
-            alert(val);
+            window.alert(val);
             if (val > 0) {
                 // press
                 uiToggleStateButton(true);
