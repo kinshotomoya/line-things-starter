@@ -254,6 +254,7 @@ function liffGetPSDIService(service) {
 }
 
 function liffGetButtonStateCharacteristic(characteristic) {
+    alert('sssssssssssss');
     // Add notification hook for button state
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
