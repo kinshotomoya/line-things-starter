@@ -3,6 +3,7 @@ const USER_SERVICE_UUID = '180ceb9c-07a3-4f06-95e7-7927579f2c7c'; // LED, Button
 // User service characteristics
 const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
 const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID = '839ff311-21a1-4114-adc0-543477dc7389';
 
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
@@ -228,6 +229,12 @@ function liffGetUserService(service) {
         uiStatusError(makeErrorMsg(error), false);
     });
 
+    service.getCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID).then(characteristic => {
+        liffGetLedButtonClickCount(characteristic);
+    }).catch(error => {
+        window.alert("Error");
+    })
+
     // readCharactericのデータを読みに行く処理
     // service.getCharacteristic(READ_SERVICE_UUID).then(characteristic => {
     //     return characteristic.readValue();
@@ -274,6 +281,15 @@ function liffGetButtonStateCharacteristic(characteristic) {
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
+}
+
+// LEDボタンのクリック数の総計をデバイス側からnotifyで送っているので、
+// それを取得する処理
+function liffGetLedButtonClickCount(characteristic) {
+    characteristic.startNotifications().then(() => {  
+        const val = characteristic.readValue();
+        window.alert(val);
+    })
 }
 
 function liffToggleDeviceLedState(state) {
