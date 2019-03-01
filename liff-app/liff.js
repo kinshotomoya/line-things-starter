@@ -214,7 +214,7 @@ function liffConnectToDevice(device) {
 function liffGetUserService(service) {
     // Button pressed state
     service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
-        window.alert('buttonです。');
+        // window.alert('buttonです。');
         liffGetButtonStateCharacteristic(characteristic);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
@@ -231,7 +231,7 @@ function liffGetUserService(service) {
     });
 
     service.getCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID).then(characteristic => {
-        window.alert('led buttonです。');
+        // window.alert('led buttonです。');
         liffGetLedButtonClickCount(characteristic);
     }).catch(error => {
         window.alert("Error");
@@ -266,7 +266,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
-        window.alert('ボタンイベントだよ！');
+        // window.alert('ボタンイベントだよ！');
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             if (val > 0) {
@@ -292,10 +292,10 @@ function liffGetLedButtonClickCount(characteristic) {
     // startNotificationsは２つ指定できないのか？
     // 上で、buttonStatusのnotificationwをstartしているので
     characteristic.startNotifications().then(() => {
-        window.alert('LEDボタンイベントだよ。');
+        // window.alert('LEDボタンイベントだよ。');
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
-            window.alert('sssssssssssssssss');
+            window.alert("LEDボタンの総クリック数" + val);
         });
     });
 }
