@@ -112,8 +112,8 @@ void loop() {
       Serial.println(btnCount);
       // LIFFから読み込むためのバリューを設定
 //      readCharacteristic->setValue(btnCount);
-      // ボタンがクリックされた回数が30回を超えた時に、セントラル側に通知する
-      if(btnCount > 30) {
+      // ボタンがクリックされた回数が30回ごとに、セントラル側に通知する
+      if(btnCount % 30 == 0) {
         notifyCharacteristic->setValue(btnCount);
         notifyCharacteristic->notify();
         delay(20);
