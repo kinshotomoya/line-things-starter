@@ -265,25 +265,25 @@ function liffGetPSDIService(service) {
 function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
-    // characteristic.startNotifications().then(() => {
-    //     window.alert('ボタンイベントだよ！');
-    //     characteristic.addEventListener('characteristicvaluechanged', e => {
-    //         const val = (new Uint8Array(e.target.value.buffer))[0];
-    //         if (val > 0) {
-    //             // press
-    //             uiToggleStateButton(true);
-    //         } else {
-    //             // release
-    //             uiToggleStateButton(false);
-    //             uiCountPressButton();
-    //         }
-    //         if (val != 0 && val % 30 === 0) {
-    //             window.alert("ボタンクリック総計：" + val);
-    //         }
-    //     });
-    // }).catch(error => {
-    //     uiStatusError(makeErrorMsg(error), false);
-    // });
+    characteristic.startNotifications().then(() => {
+        window.alert('ボタンイベントだよ！');
+        characteristic.addEventListener('characteristicvaluechanged', e => {
+            const val = (new Uint8Array(e.target.value.buffer))[0];
+            if (val > 0) {
+                // press
+                uiToggleStateButton(true);
+            } else {
+                // release
+                uiToggleStateButton(false);
+                uiCountPressButton();
+            }
+            if (val != 0 && val % 30 === 0) {
+                window.alert("ボタンクリック総計：" + val);
+            }
+        });
+    }).catch(error => {
+        uiStatusError(makeErrorMsg(error), false);
+    });
 }
 
 // LEDボタンのクリック数の総計をデバイス側からnotifyで送っているので、
