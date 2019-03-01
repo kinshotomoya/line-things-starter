@@ -294,8 +294,8 @@ function liffGetLedButtonClickCount(characteristic) {
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             window.alert('sssssssssssssssss');
-        })
-    })
+        });
+    });
 }
 
 function liffToggleDeviceLedState(state) {
