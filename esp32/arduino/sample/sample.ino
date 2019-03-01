@@ -12,9 +12,12 @@
 #define WRITE_CHARACTERISTIC_UUID "E9062E71-9E62-4BC6-B0D3-35CDCD9B027B"
 #define NOTIFY_CHARACTERISTIC_UUID "62FBD229-6EDD-4D1A-B554-5C4E1BB29169"
 
+#define NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID "839ff311-21a1-4114-adc0-543477dc7389"
+
 // PSDI Service UUID: Fixed value for Developer Trial
 #define PSDI_SERVICE_UUID "e625601e-9e55-4597-a598-76018a0d293d"
 #define PSDI_CHARACTERISTIC_UUID "26E2B12B-85F0-4F3F-9FDD-91D114270E6E"
+
 
 //#define READ_CHARACTERISTIC_UUID "af930343-cc42-4b47-80e3-b47a6b585d26"
 
@@ -28,6 +31,7 @@ BLEService* psdiService;
 BLECharacteristic* psdiCharacteristic;
 BLECharacteristic* writeCharacteristic;
 BLECharacteristic* notifyCharacteristic;
+BLECharacteristic* ledNotifyCharacteristic;
 //BLECharacteristic* readCharacteristic;
 
 bool deviceConnected = false;
@@ -47,6 +51,7 @@ class serverCallbacks: public BLEServerCallbacks {
   }
 };
 
+int ledClickCount = 0;
 // ここで,セントラルから送られてきた値を取得している。
 // 具体的には、LEDライトのON OFFの値を取得。
 class writeCallback: public BLECharacteristicCallbacks {
@@ -55,7 +60,17 @@ class writeCallback: public BLECharacteristicCallbacks {
 //      なので、.c_str()でC言語のchar＊に変換する必要がある
     std::string value = bleWriteCharacteristic->getValue();
     Serial.println((char)value[0]);
-//  printf(value.c_str());
+    ledClickCount++;
+    Serial.print("LEDライトボタンのクリック総計：");
+    Serial.println(ledClickCount);
+//     LEDライトボタンのクリック総計が30の倍数を超える毎にLIFFに通知する
+    if (ledClickCount % 30 == 0) {
+      Serial.print("LEDボタンのクリック数が");
+      Serial.println(ledClickCount);
+      Serial.print("を超えました。");
+      ledNotifyCharacteristic->setValue(ledClickCount);
+      ledNotifyCharacteristic->notify();
+    }
     if ((char)value[0] <= 1) {
       digitalWrite(LED1, (char)value[0]);
     }
@@ -153,6 +168,14 @@ void setupServices(void) {
   ble9202->setNotifications(true);
   ble9202->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
   notifyCharacteristic->addDescriptor(ble9202);
+
+  // notify_led_click_characteristicを設定
+  ledNotifyCharacteristic = userService->createCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_NOTIFY);
+  ledNotifyCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
+  BLE2902* ble9202ForLed = new BLE2902();
+  ble9202ForLed->setNotifications(true);
+  ble9202ForLed->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
+  ledNotifyCharacteristic->addDescriptor(ble9202ForLed);
 
   // readのcharacteristicを設定
 //  readCharacteristic = userService->createCharacteristic(READ_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ);
