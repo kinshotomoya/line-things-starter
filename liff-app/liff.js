@@ -259,9 +259,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
     characteristic.startNotifications().then(() => {
         characteristic.addEventListener('characteristicvaluec', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
-            if (val % 30 == 0) {
-                window.alert("ボタンクリック総計：" + val);
-            }
             if (val > 0) {
                 // press
                 uiToggleStateButton(true);
@@ -269,6 +266,9 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 // release
                 uiToggleStateButton(false);
                 uiCountPressButton();
+            }
+            if (val % 30 === 0) {
+                window.alert("ボタンクリック総計：" + val);
             }
         });
     }).catch(error => {
