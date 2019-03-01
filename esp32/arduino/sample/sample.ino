@@ -51,7 +51,11 @@ class serverCallbacks: public BLEServerCallbacks {
 // 具体的には、LEDライトのON OFFの値を取得。
 class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
+//    std::stringはc++の型なので、c言語のライブラリであるprintfでは受け取れない。
+//      なので、.c_str()でC言語のchar＊に変換する必要がある
     std::string value = bleWriteCharacteristic->getValue();
+    Serial.println((char)value[0]);
+//  printf(value.c_str());
     if ((char)value[0] <= 1) {
       digitalWrite(LED1, (char)value[0]);
     }
@@ -84,8 +88,8 @@ void setup() {
   Serial.println("Ready to Connect");
 }
 
-
-//int btnCount = 0;
+// ボタン押された回数を保持するグローバル変数
+int btnCount = 0;
 
 void loop() {
   uint8_t btnValue;
@@ -102,12 +106,19 @@ void loop() {
     delay(20);
 
     // btnValueが1のとき（ボタンが押されているとき）に実行される
-//    if(btnValue) {
-//      btnCount++;
-//      Serial.println(btnCount);
-//      // LIFFから読み込むためのバリューを設定
+    if(btnValue) {
+      btnCount++;
+      Serial.print("クリック総計：");
+      Serial.println(btnCount);
+      // LIFFから読み込むためのバリューを設定
 //      readCharacteristic->setValue(btnCount);
-//    }
+      // ボタンがクリックされた回数が30回を超えた時に、セントラル側に通知する
+      if(btnCount > 30) {
+        notifyCharacteristic->setValue(btnCount);
+        notifyCharacteristic->notify();
+        delay(20);
+      }
+    }
   }
   // Disconnection
   if (!deviceConnected && oldDeviceConnected) {
