@@ -267,7 +267,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 uiToggleStateButton(false);
                 uiCountPressButton();
             }
-            if (val % 30 === 0) {
+            if (val != 0 && val % 30 === 0) {
                 window.alert("ボタンクリック総計：" + val);
             }
         });
