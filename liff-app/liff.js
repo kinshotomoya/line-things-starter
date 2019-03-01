@@ -266,7 +266,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
-        // window.alert('ボタンイベントだよ！');
+        window.alert('ボタンイベントだよ！');
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             if (val > 0) {
@@ -292,7 +292,7 @@ function liffGetLedButtonClickCount(characteristic) {
     // startNotificationsは２つ指定できないのか？
     // 上で、buttonStatusのnotificationwをstartしているので
     characteristic.startNotifications().then(() => {
-        // window.alert('LEDボタンイベントだよ。');
+        window.alert('LEDボタンイベントだよ。');
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             window.alert("LEDボタンの総クリック数" + val);
