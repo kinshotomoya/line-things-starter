@@ -286,9 +286,11 @@ function liffGetButtonStateCharacteristic(characteristic) {
 // LEDボタンのクリック数の総計をデバイス側からnotifyで送っているので、
 // それを取得する処理
 function liffGetLedButtonClickCount(characteristic) {
-    characteristic.startNotifications().then(() => {  
-        const val = characteristic.readValue();
-        window.alert(val);
+    characteristic.startNotifications().then(() => {
+        characteristic.addEventListener('characteristicvaluechanged', e => {
+            const val = (new Uint8Array(e.target.value.buffer))[0];
+            window.alert('sssssssssssssssss');
+        })
     })
 }
 

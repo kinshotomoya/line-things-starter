@@ -103,7 +103,7 @@ void setup() {
   Serial.println("Ready to Connect");
 }
 
-// ボタン押された回数を保持するグローバル変数
+// デバイスのボタンが押された回数を保持するグローバル変数
 int btnCount = 0;
 
 void loop() {
