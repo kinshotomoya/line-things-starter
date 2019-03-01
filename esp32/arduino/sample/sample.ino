@@ -68,8 +68,10 @@ class writeCallback: public BLECharacteristicCallbacks {
       Serial.print("LEDボタンのクリック数が");
       Serial.println(ledClickCount);
       Serial.print("を超えました。");
+//      TODO: notifyでちゃんと遅れてない？！！？？
       ledNotifyCharacteristic->setValue(ledClickCount);
       ledNotifyCharacteristic->notify();
+//      Serial.println(ledNotifyCharacteristic);
     }
     if ((char)value[0] <= 1) {
       digitalWrite(LED1, (char)value[0]);
@@ -103,7 +105,7 @@ void setup() {
   Serial.println("Ready to Connect");
 }
 
-// デバイスのボタンが押された回数を保持するグローバル変数
+// ボタン押された回数を保持するグローバル変数
 int btnCount = 0;
 
 void loop() {
