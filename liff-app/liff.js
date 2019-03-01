@@ -81,6 +81,7 @@ function uiToggleDeviceConnected(connected) {
         elStatus.classList.add("success");
         elStatus.innerText = "Device connected";
         // Show controls
+        // BELデバイスと接続できた場合のみ、hiddenを外してviewを表示させる
         elControls.classList.remove("hidden");
     } else {
         // Show loading animation
@@ -228,14 +229,14 @@ function liffGetUserService(service) {
     });
 
     // readCharactericのデータを読みに行く処理
-    service.getCharacteristic(READ_SERVICE_UUID).then(characteristic => {
-        return characteristic.readValue();
-    }).then(value => {
-        const value = new DataView(value.buffer).getInt32(0, true);
-        document.getElementById("total-count").innerText = value;
-    }).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
+    // service.getCharacteristic(READ_SERVICE_UUID).then(characteristic => {
+    //     return characteristic.readValue();
+    // }).then(value => {
+    //     const value = new DataView(value.buffer).getInt32(0, true);
+    //     document.getElementById("total-count").innerText = value;
+    // }).catch(error => {
+    //     uiStatusError(makeErrorMsg(error), false);
+    // });
 }
 
 function liffGetPSDIService(service) {
