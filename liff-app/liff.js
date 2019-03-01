@@ -257,7 +257,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
-        characteristic.addEventListener('characteristicvaluec', e => {
+        characteristic.addEventListener('characteristicvaluechange', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             if (val > 0) {
                 // press
