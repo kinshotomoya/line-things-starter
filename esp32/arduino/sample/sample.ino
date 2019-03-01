@@ -71,7 +71,6 @@ class writeCallback: public BLECharacteristicCallbacks {
 //      TODO: notifyでちゃんと遅れてない？！！？？
       ledNotifyCharacteristic->setValue(ledClickCount);
       ledNotifyCharacteristic->notify();
-//      Serial.println(ledNotifyCharacteristic);
     }
     if ((char)value[0] <= 1) {
       digitalWrite(LED1, (char)value[0]);
