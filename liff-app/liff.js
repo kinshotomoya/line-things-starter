@@ -214,7 +214,7 @@ function liffConnectToDevice(device) {
 function liffGetUserService(service) {
     // Button pressed state
     service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
-        window.alert('charastericを取得したところ');
+        window.alert('buttonです。');
         liffGetButtonStateCharacteristic(characteristic);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
@@ -231,6 +231,7 @@ function liffGetUserService(service) {
     });
 
     service.getCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID).then(characteristic => {
+        window.alert('led buttonです。');
         liffGetLedButtonClickCount(characteristic);
     }).catch(error => {
         window.alert("Error");
