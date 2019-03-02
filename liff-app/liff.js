@@ -340,11 +340,11 @@ async function getUserOpinion () {
     // 快適
     const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
     const hash = {
-        atuiOpinion: atuiOpinion.data,
-        samuiOpinion: samuiOpinion.data,
-        kaitekiOpinion: kaitekiOpinion.data
+        atui: atuiOpinion.data,
+        samui: samuiOpinion.data,
+        kaiteki: kaitekiOpinion.data
     };
-    window.alert(hash.atuiOpinion);
+    window.alert(hash.atui);
     return hash;
 }
 
