@@ -11,7 +11,7 @@ const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 
 // APIを叩くためのライブラリをinstall
-const axios = require('axios');
+// const axios = require('axios');
 
 // const READ_SERVICE_UUID = 'af930343-cc42-4b47-80e3-b47a6b585d26';
 
