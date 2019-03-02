@@ -146,6 +146,7 @@ function initializeLiff() {
 
 function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
+    window.alert('A');
     liff.bluetooth.getAvailability().then(isAvailable => {
         if (isAvailable) {
             uiToggleDeviceConnected(false);
@@ -161,7 +162,7 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
 
 function liffRequestDevice() {
     liff.bluetooth.requestDevice().then(device => {
-        window.alert("ssssssssssssssssssssss");
+        window.alert('B');
         liffConnectToDevice(device);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
