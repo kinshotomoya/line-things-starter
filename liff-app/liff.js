@@ -163,10 +163,8 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
 
 function liffRequestDevice() {
     liff.bluetooth.requestDevice().then(device => {
-        window.alert('B');
         liffConnectToDevice(device);
     }).catch(error => {
-        window.alert('D');
         uiStatusError(makeErrorMsg(error), false);
     });
 }
@@ -234,12 +232,12 @@ function liffGetUserService(service) {
         uiStatusError(makeErrorMsg(error), false);
     });
 
-    service.getCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID).then(characteristic => {
-        // window.alert('led buttonです。');
-        liffGetLedButtonClickCount(characteristic);
-    }).catch(error => {
-        window.alert("Error");
-    })
+    // service.getCharacteristic(NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID).then(characteristic => {
+    //     // window.alert('led buttonです。');
+    //     liffGetLedButtonClickCount(characteristic);
+    // }).catch(error => {
+    //     window.alert("Error");
+    // })
 
     // readCharactericのデータを読みに行く処理
     // service.getCharacteristic(READ_SERVICE_UUID).then(characteristic => {
@@ -269,8 +267,8 @@ function liffGetPSDIService(service) {
 function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
+    // デバイスからの通知を検知している
     characteristic.startNotifications().then(() => {
-        window.alert('ボタンイベントだよ！');
         characteristic.addEventListener('characteristicvaluechanged', e => {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             if (val > 0) {
@@ -308,6 +306,7 @@ function liffToggleDeviceLedState(state) {
     // on: 0x01
     // off: 0x00
     // デバイスに値を送っている
+    // バイナリで送っている
     window.ledCharacteristic.writeValue(
         state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
     ).catch(error => {
