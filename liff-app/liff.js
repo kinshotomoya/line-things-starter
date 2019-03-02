@@ -312,7 +312,7 @@ function liffToggleDeviceLedState(state) {
     // デバイスに値を送っている
     // バイナリで送っている
     window.ledCharacteristic.writeValue(
-        state ? new Uint8Array([0x3E8, 0x01]) : new Uint8Array([0x3E8, 0x00])
+        state ? new Uint8Array([0x3FF, 0x01]) : new Uint8Array([0x3FF, 0x00])
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
