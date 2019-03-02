@@ -166,6 +166,7 @@ function liffRequestDevice() {
         window.alert('B');
         liffConnectToDevice(device);
     }).catch(error => {
+        window.alert('D');
         uiStatusError(makeErrorMsg(error), false);
     });
 }
