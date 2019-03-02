@@ -148,6 +148,7 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
     window.alert('A');
     liff.bluetooth.getAvailability().then(isAvailable => {
+        window.alert(isAvailable);
         if (isAvailable) {
             uiToggleDeviceConnected(false);
             callbackIfAvailable();
