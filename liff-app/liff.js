@@ -321,9 +321,11 @@ function liffToggleDeviceLedState(state) {
 function liffGetAndWriteUserOpinionToDevice() {
     // APIで取得したデータをhash形式で保持している
     const userOpinionsHash = getUserOpinion();
+    window.alert('sssssssssss');
     window.alert(userOpinionsHash.atuiOpinion);
-    const atuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.atuiOpinion);
-    const samuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.samuiOpinion);
+    window.alert('dddddddd');
+    const atuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.atui);
+    const samuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.samui);
     const kaitekiHexadecimal = exchangeToHexadecimal(userOpinionsHash.kaiteki);
     window.ledCharacteristic.writeValue(
         new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
@@ -344,6 +346,7 @@ async function getUserOpinion () {
         samui: samuiOpinion.data,
         kaiteki: kaitekiOpinion.data
     };
+    window.alert('eeeeeeeeeeeee');
     window.alert(hash.atui);
     return hash;
 }
