@@ -68,7 +68,6 @@ class writeCallback: public BLECharacteristicCallbacks {
       Serial.print("LEDボタンのクリック数が");
       Serial.println(ledClickCount);
       Serial.print("を超えました。");
-//      TODO: notifyでちゃんと遅れてない？！！？？
       ledNotifyCharacteristic->setValue(ledClickCount);
       ledNotifyCharacteristic->notify();
     }

@@ -161,6 +161,7 @@ function liffCheckAvailablityAndDo(callbackIfAvailable) {
 
 function liffRequestDevice() {
     liff.bluetooth.requestDevice().then(device => {
+        window.alert("ssssssssssssssssssssss");
         liffConnectToDevice(device);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
@@ -303,6 +304,7 @@ function liffGetLedButtonClickCount(characteristic) {
 function liffToggleDeviceLedState(state) {
     // on: 0x01
     // off: 0x00
+    // デバイスに値を送っている
     window.ledCharacteristic.writeValue(
         state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
     ).catch(error => {
