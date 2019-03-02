@@ -10,9 +10,6 @@ const NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID = '839ff311-21a1-4114-adc0-543
 const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 
-// APIを叩くためのライブラリをinstall
-// const axios = require('axios');
-
 // const READ_SERVICE_UUID = 'af930343-cc42-4b47-80e3-b47a6b585d26';
 
 // UI settings
@@ -234,7 +231,7 @@ function liffGetUserService(service) {
         // 暑い、寒い、臭いなどのユーザー票データを、GASのwebサーバから取得して、
         // デバイスに通知する
         // TODO:
-        // liffGetAndWriteUserOpinionToDevice();
+        liffGetAndWriteUserOpinionToDevice();
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -315,30 +312,42 @@ function liffToggleDeviceLedState(state) {
     // デバイスに値を送っている
     // バイナリで送っている
     window.ledCharacteristic.writeValue(
-        state ? new Uint8Array([0x01, 0x03]) : new Uint8Array([0x00, 0x04])
+        state ? new Uint8Array([-0x01, 0x01]) : new Uint8Array([-0x01, 0x00])
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
 }
 
-// function liffGetAndWriteUserOpinionToDevice() {
-//     // APIで取得したデータをhash形式で保持している
-//     const userOpinionsHash = getUserOpinion();
-//     window.ledCharacteristic.writeValue(
-//         TODO: // 整数を16進数に直す
-//         // new Uint8Array([0x01, 0x00])みたいに、複数を送る
-//     ).catch(error => {
-//         window.alert('エラーです。');
-//     })
-// }
+function liffGetAndWriteUserOpinionToDevice() {
+    // APIで取得したデータをhash形式で保持している
+    const userOpinionsHash = getUserOpinion();
+    const atuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.atuiOpinion);
+    const samuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.samuiOpinion);
+    const kaitekiHexadecimal = exchangeToHexadecimal(userOpinionsHash.kaiteki);
+    window.ledCharacteristic.writeValue(
+        new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
+    ).catch(error => {
+        window.alert('エラーです。');
+    })
+}
 
-// async function getUserOpinion () {
-//     const atuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
-//     const samuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
-//     const kusaiOpinion = axios.get("URL");
-//     return {
-//         atuiOpinion: atuiOpinion,
-//         samuiOpinion: samuiOpinion,
-//         kusaiOpinion: kusaiOpinion
-//     };
-// }
+async function getUserOpinion () {
+    // 暑い
+    const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
+    // 寒い
+    const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
+    // 快適
+    const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
+    return {
+        atuiOpinion: atuiOpinion,
+        samuiOpinion: samuiOpinion,
+        kaitekiOpinion: kaitekiOpinion
+    };
+}
+
+// 16進数に変換する関数
+function exchangeToHexadecimal(userOpinion) {
+    // userOpinionには、10進数の整数が入っている
+    return '0x' + (('0000' + userOpinion.toString(16).toString(16).toUpperCase()).substr(-4));
+    
+}

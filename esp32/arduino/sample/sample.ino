@@ -52,42 +52,47 @@ class serverCallbacks: public BLEServerCallbacks {
 };
 
 int ledClickCount = 0;
-int hotClickCount = 0;
-int coldClickCount = 0;
 // ここで,セントラルから送られてきた値を取得している。
 // 具体的には、LEDライトのON OFFの値を取得。
 class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
-    // バイナリで送られてくるので、変換する必要がある
-//    std::stringはc++の型なので、c言語のライブラリであるprintfでは受け取れない。
-//      なので、.c_str()でC言語のchar＊に変換する必要がある
-// TODO: 基本的に、バイナリ（中身は数値）で、寒い・暑い・臭いを判断できるようにしてほしい
+//  バイナリで送られてくるので、変換する必要がある
+//  std::stringはc++の型なので、c言語のライブラリであるprintfでは受け取れない。
+//  なので、.c_str()でC言語のchar＊に変換する必要がある
     std::string value = bleWriteCharacteristic->getValue();
-    // numには、セントラルから送ってきた 1,0 のデータが入っている。
-    int num = (char)value[0];
-    if(num == 0) {
-      hotClickCount++;
-      Serial.print("暑いボタンの総数は：");
-      Serial.println(hotClickCount);
-    } else if (num == 1){
-      coldClickCount++;
-      Serial.print("寒いボタンの総数は：");
-      Serial.println(coldClickCount);
-    };
-    Serial.println(num);
-    ledClickCount++;
-    Serial.print("LEDライトボタンのクリック総計：");
-    Serial.println(ledClickCount);
-//     LEDライトボタンのクリック総計が30の倍数を超える毎にLIFFに通知する
-    if (ledClickCount % 30 == 0) {
-      Serial.print("LEDボタンのクリック数が");
+//  セントラルから、（暑い、寒い、快適）[13, 43, 23]みたいな順番に送ってくる
+//  LEDボタンのときは、value[0]に-1が格納。票のときは、票数をintで送る
+    int decisionNum = (char)value[0];
+    Serial.print("ボタンか票の判断数字");
+    Serial.println(decisionNum);
+    if (decisionNum == -1) {
+//    LEDボタンが押された
+      ledClickCount++;
+      Serial.print("LEDライトボタンのクリック総計：");
       Serial.println(ledClickCount);
-      Serial.print("を超えました。");
-      ledNotifyCharacteristic->setValue(ledClickCount);
-      ledNotifyCharacteristic->notify();
-    }
-    if ((char)value[0] <= 1) {
-      digitalWrite(LED1, (char)value[0]);
+      if (ledClickCount % 30 == 0) {
+//      LEDライトボタンのクリック総計が30の倍数を超える毎にLIFFに通知する
+        Serial.print("LEDボタンのクリック数が");
+        Serial.println(ledClickCount);
+        Serial.print("を超えました。");
+        ledNotifyCharacteristic->setValue(ledClickCount);
+        ledNotifyCharacteristic->notify();
+      }
+      if ((char)value[0] <= 1) {
+        digitalWrite(LED1, (char)value[0]);
+      }
+    } else {
+//       暑いなどの票数を送られてきた。
+      int atuiClickCount = (char)value[0];
+      int samuiClickCount = (char)value[1];
+      int kaitekiClickCount = (char)value[2];
+  
+      Serial.print("暑いの総カウント数");
+      Serial.println(atuiClickCount);
+      Serial.print("寒いの総カウント数");
+      Serial.println(samuiClickCount);
+      Serial.print("快適の総カウント数");
+      Serial.println(kaitekiClickCount);
     }
   }
 };
