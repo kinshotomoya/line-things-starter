@@ -52,14 +52,29 @@ class serverCallbacks: public BLEServerCallbacks {
 };
 
 int ledClickCount = 0;
+int hotClickCount = 0;
+int coldClickCount = 0;
 // ここで,セントラルから送られてきた値を取得している。
 // 具体的には、LEDライトのON OFFの値を取得。
 class writeCallback: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *bleWriteCharacteristic) {
+    // バイナリで送られてくるので、変換する必要がある
 //    std::stringはc++の型なので、c言語のライブラリであるprintfでは受け取れない。
 //      なので、.c_str()でC言語のchar＊に変換する必要がある
+// TODO: 基本的に、バイナリ（中身は数値）で、寒い・暑い・臭いを判断できるようにしてほしい
     std::string value = bleWriteCharacteristic->getValue();
-    Serial.println((char)value[0]);
+    // numには、セントラルから送ってきた 1,0 のデータが入っている。
+    int num = (char)value[0];
+    if(num == 0) {
+      hotClickCount++;
+      Serial.print("暑いボタンの総数は：");
+      Serial.println(hotClickCount);
+    } else if (num == 1){
+      coldClickCount++;
+      Serial.print("寒いボタンの総数は：");
+      Serial.println(coldClickCount);
+    };
+    Serial.println(num);
     ledClickCount++;
     Serial.print("LEDライトボタンのクリック総計：");
     Serial.println(ledClickCount);

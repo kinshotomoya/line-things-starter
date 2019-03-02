@@ -1,3 +1,4 @@
+
 // User service UUID: Change this to your generated service UUID
 const USER_SERVICE_UUID = '180ceb9c-07a3-4f06-95e7-7927579f2c7c'; // LED, Button
 // User service characteristics
@@ -8,6 +9,9 @@ const NOTIFY_LED_BUTTON_CLICK_CHARACTERISTIC_UUID = '839ff311-21a1-4114-adc0-543
 // PSDI Service UUID: Fixed value for Developer Trial
 const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
 const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
+
+// APIを叩くためのライブラリをinstall
+const axios = require('axios');
 
 // const READ_SERVICE_UUID = 'af930343-cc42-4b47-80e3-b47a6b585d26';
 
@@ -216,7 +220,6 @@ function liffConnectToDevice(device) {
 function liffGetUserService(service) {
     // Button pressed state
     service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
-        // window.alert('buttonです。');
         liffGetButtonStateCharacteristic(characteristic);
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
@@ -228,6 +231,10 @@ function liffGetUserService(service) {
 
         // Switch off by default
         liffToggleDeviceLedState(false);
+        // 暑い、寒い、臭いなどのユーザー票データを、GASのwebサーバから取得して、
+        // デバイスに通知する
+        // TODO:
+        // liffGetAndWriteUserOpinionToDevice();
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -308,8 +315,30 @@ function liffToggleDeviceLedState(state) {
     // デバイスに値を送っている
     // バイナリで送っている
     window.ledCharacteristic.writeValue(
-        state ? new Uint8Array([0x01]) : new Uint8Array([0x00])
+        state ? new Uint8Array([0x01, 0x03]) : new Uint8Array([0x00, 0x04])
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
+}
+
+function liffGetAndWriteUserOpinionToDevice() {
+    // APIで取得したデータをhash形式で保持している
+    const userOpinionsHash = getUserOpinion();
+    window.ledCharacteristic.writeValue(
+        TODO: // 整数を16進数に直す
+        // new Uint8Array([0x01, 0x00])みたいに、複数を送る
+    ).catch(error => {
+        window.alert('エラーです。');
+    })
+}
+
+async function getUserOpinion () {
+    const atuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
+    const samuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
+    const kusaiOpinion = axios.get("URL");
+    return {
+        atuiOpinion: atuiOpinion,
+        samuiOpinion: samuiOpinion,
+        kusaiOpinion: kusaiOpinion
+    };
 }
