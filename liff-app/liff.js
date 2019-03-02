@@ -22,9 +22,6 @@ let option = { filters: [{ services: ['180ceb9c-07a3-4f06-95e7-7927579f2c7c'] }]
 // -------------- //
 
 window.onload = () => {
-    navigator.bluetooth.requestDevice(option).then(device => {
-        window.alert("デバイスを取得しました");
-    });
     initializeApp();
 };
 
@@ -151,7 +148,9 @@ function initializeLiff() {
 
 function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
-    window.alert('A');
+    navigator.bluetooth.requestDevice(option).then(device => {
+        window.alert("デバイスを取得しました");
+    });
     liff.bluetooth.getAvailability().then(isAvailable => {
         window.alert(isAvailable);
         if (isAvailable) {
