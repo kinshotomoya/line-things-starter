@@ -321,24 +321,24 @@ function liffToggleDeviceLedState(state) {
     });
 }
 
-function liffGetAndWriteUserOpinionToDevice() {
-    // APIで取得したデータをhash形式で保持している
-    const userOpinionsHash = getUserOpinion();
-    window.ledCharacteristic.writeValue(
-        TODO: // 整数を16進数に直す
-        // new Uint8Array([0x01, 0x00])みたいに、複数を送る
-    ).catch(error => {
-        window.alert('エラーです。');
-    })
-}
+// function liffGetAndWriteUserOpinionToDevice() {
+//     // APIで取得したデータをhash形式で保持している
+//     const userOpinionsHash = getUserOpinion();
+//     window.ledCharacteristic.writeValue(
+//         TODO: // 整数を16進数に直す
+//         // new Uint8Array([0x01, 0x00])みたいに、複数を送る
+//     ).catch(error => {
+//         window.alert('エラーです。');
+//     })
+// }
 
-async function getUserOpinion () {
-    const atuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
-    const samuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
-    const kusaiOpinion = axios.get("URL");
-    return {
-        atuiOpinion: atuiOpinion,
-        samuiOpinion: samuiOpinion,
-        kusaiOpinion: kusaiOpinion
-    };
-}
+// async function getUserOpinion () {
+//     const atuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
+//     const samuiOpinion = axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
+//     const kusaiOpinion = axios.get("URL");
+//     return {
+//         atuiOpinion: atuiOpinion,
+//         samuiOpinion: samuiOpinion,
+//         kusaiOpinion: kusaiOpinion
+//     };
+// }
