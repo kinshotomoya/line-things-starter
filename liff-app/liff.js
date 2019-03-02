@@ -320,18 +320,7 @@ function liffToggleDeviceLedState(state) {
 
 function liffGetAndWriteUserOpinionToDevice() {
     // APIで取得したデータをhash形式で保持している
-    const userOpinionsHash = getUserOpinion();
-    window.alert('sssssssssss');
-    window.alert(userOpinionsHash.atuiOpinion);
-    window.alert('dddddddd');
-    const atuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.atui);
-    const samuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.samui);
-    const kaitekiHexadecimal = exchangeToHexadecimal(userOpinionsHash.kaiteki);
-    window.ledCharacteristic.writeValue(
-        new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
-    ).catch(error => {
-        window.alert('エラーです。');
-    })
+    getUserOpinion();
 }
 
 async function getUserOpinion () {
@@ -348,11 +337,20 @@ async function getUserOpinion () {
     };
     window.alert('eeeeeeeeeeeee');
     window.alert(hash.atui);
-    return hash;
+    const atuiHexadecimal = exchangeToHexadecimal(hash.atui);
+    const samuiHexadecimal = exchangeToHexadecimal(hash.samui);
+    const kaitekiHexadecimal = exchangeToHexadecimal(hash.kaiteki);
+    window.alert(atuiHexadecimal);
+    window.ledCharacteristic.writeValue(
+        new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
+    ).catch(error => {
+        window.alert('エラーです。');
+    })
 }
 
 // 16進数に変換する関数
 function exchangeToHexadecimal(userOpinion) {
+    window.alert("sssssssssss");
     // userOpinionには、10進数の整数が入っている
     return '0x' + (('0000' + userOpinion.toString(16).toString(16).toUpperCase()).substr(-4));
     
