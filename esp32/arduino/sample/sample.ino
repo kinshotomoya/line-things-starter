@@ -65,7 +65,7 @@ class writeCallback: public BLECharacteristicCallbacks {
     int decisionNum = (char)value[0];
     Serial.print("ボタンか票の判断数字");
     Serial.println(decisionNum);
-    if (decisionNum == -1) {
+    if (decisionNum == 1000) {
 //    LEDボタンが押された
       ledClickCount++;
       Serial.print("LEDライトボタンのクリック総計：");

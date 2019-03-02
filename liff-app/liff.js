@@ -312,7 +312,7 @@ function liffToggleDeviceLedState(state) {
     // デバイスに値を送っている
     // バイナリで送っている
     window.ledCharacteristic.writeValue(
-        state ? new Uint8Array([-0x01, 0x01]) : new Uint8Array([-0x01, 0x00])
+        state ? new Uint8Array([0x3E8, 0x01]) : new Uint8Array([0x3E8, 0x00])
     ).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -334,10 +334,13 @@ function liffGetAndWriteUserOpinionToDevice() {
 async function getUserOpinion () {
     // 暑い
     const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
+    window.alert(atuiOpinion);
     // 寒い
     const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
+    window.alert(samuiOpinion);
     // 快適
     const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
+    window.alert(kaitekiOpinion);
     return {
         atuiOpinion: atuiOpinion,
         samuiOpinion: samuiOpinion,
