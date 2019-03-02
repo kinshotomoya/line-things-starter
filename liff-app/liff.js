@@ -292,17 +292,17 @@ function liffGetButtonStateCharacteristic(characteristic) {
 
 // LEDボタンのクリック数の総計をデバイス側からnotifyで送っているので、
 // それを取得する処理
-function liffGetLedButtonClickCount(characteristic) {
-    // startNotificationsは２つ指定できないのか？
-    // 上で、buttonStatusのnotificationwをstartしているので
-    characteristic.startNotifications().then(() => {
-        window.alert('LEDボタンイベントだよ。');
-        characteristic.addEventListener('characteristicvaluechanged', e => {
-            const val = (new Uint8Array(e.target.value.buffer))[0];
-            window.alert("LEDボタンの総クリック数" + val);
-        });
-    });
-}
+// function liffGetLedButtonClickCount(characteristic) {
+//     // startNotificationsは２つ指定できないのか？
+//     // 上で、buttonStatusのnotificationwをstartしているので
+//     characteristic.startNotifications().then(() => {
+//         window.alert('LEDボタンイベントだよ。');
+//         characteristic.addEventListener('characteristicvaluechanged', e => {
+//             const val = (new Uint8Array(e.target.value.buffer))[0];
+//             window.alert("LEDボタンの総クリック数" + val);
+//         });
+//     });
+// }
 
 function liffToggleDeviceLedState(state) {
     // on: 0x01
