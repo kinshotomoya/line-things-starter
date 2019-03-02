@@ -147,6 +147,9 @@ function initializeLiff() {
 function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
     window.alert('A');
+    navigator.bluetooth.requestDevice(options).then(device => {
+        window.alert("デバイスを取得しました"); 
+    });
     liff.bluetooth.getAvailability().then(isAvailable => {
         window.alert(isAvailable);
         if (isAvailable) {
