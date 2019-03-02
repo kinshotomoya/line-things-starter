@@ -321,7 +321,7 @@ function liffToggleDeviceLedState(state) {
 function liffGetAndWriteUserOpinionToDevice() {
     // APIで取得したデータをhash形式で保持している
     const userOpinionsHash = getUserOpinion();
-    window.alert(userOpinionsHash);
+    window.alert(userOpinionsHash.atuiOpinion);
     const atuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.atuiOpinion);
     const samuiHexadecimal = exchangeToHexadecimal(userOpinionsHash.samuiOpinion);
     const kaitekiHexadecimal = exchangeToHexadecimal(userOpinionsHash.kaiteki);
@@ -334,17 +334,18 @@ function liffGetAndWriteUserOpinionToDevice() {
 
 async function getUserOpinion () {
     // 暑い
-    window.alert("sssssss");
     const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
     // 寒い
     const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
     // 快適
     const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
-    return {
+    const hash = {
         atuiOpinion: atuiOpinion.data,
         samuiOpinion: samuiOpinion.data,
         kaitekiOpinion: kaitekiOpinion.data
     };
+    window.alert(hash.atuiOpinion);
+    return hash;
 }
 
 // 16進数に変換する関数
