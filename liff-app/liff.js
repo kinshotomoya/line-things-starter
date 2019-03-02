@@ -334,17 +334,14 @@ function liffGetAndWriteUserOpinionToDevice() {
 async function getUserOpinion () {
     // 暑い
     const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
-    window.alert(atuiOpinion);
     // 寒い
     const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_cold");
-    window.alert(samuiOpinion);
     // 快適
     const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
-    window.alert(kaitekiOpinion);
     return {
-        atuiOpinion: atuiOpinion,
-        samuiOpinion: samuiOpinion,
-        kaitekiOpinion: kaitekiOpinion
+        atuiOpinion: atuiOpinion.data,
+        samuiOpinion: samuiOpinion.data,
+        kaitekiOpinion: kaitekiOpinion.data
     };
 }
 
