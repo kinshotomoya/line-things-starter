@@ -139,6 +139,9 @@ function initializeApp() {
 }
 
 function initializeLiff() {
+    navigator.bluetooth.requestDevice(option).then(device => {
+        window.alert("デバイスを取得しました");
+    });
     liff.initPlugins(['bluetooth']).then(() => {
         liffCheckAvailablityAndDo(() => liffRequestDevice());
     }).catch(error => {
@@ -148,9 +151,6 @@ function initializeLiff() {
 
 function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
-    // navigator.bluetooth.requestDevice(option).then(device => {
-    //     window.alert("デバイスを取得しました");
-    // });
     liff.bluetooth.getAvailability().then(isAvailable => {
         window.alert(isAvailable);
         if (isAvailable) {
