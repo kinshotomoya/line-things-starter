@@ -15,6 +15,8 @@ const PSDI_CHARACTERISTIC_UUID = '26E2B12B-85F0-4F3F-9FDD-91D114270E6E';
 let ledState = false; // true: LED on, false: LED off
 let clickCount = 0;
 
+let option = { filters: [{ services: ['180ceb9c-07a3-4f06-95e7-7927579f2c7c'] }] };
+
 // -------------- //
 // On window load //
 // -------------- //
