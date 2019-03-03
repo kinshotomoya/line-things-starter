@@ -149,7 +149,6 @@ function initializeLiff() {
 function liffCheckAvailablityAndDo(callbackIfAvailable) {
     // Check Bluetooth availability
     liff.bluetooth.getAvailability().then(isAvailable => {
-        window.alert(isAvailable);
         if (isAvailable) {
             uiToggleDeviceConnected(false);
             callbackIfAvailable();
@@ -320,37 +319,31 @@ function liffToggleDeviceLedState(state) {
 
 function liffGetAndWriteUserOpinionToDevice() {
     // APIで取得したデータをhash形式で保持している
-    getUserOpinion();
+    setTimeout(async () => { getUserOpinion() }, 100);
 }
 
 async function getUserOpinion () {
-    // 暑い
-    const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
-    // 寒い
-    const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=cold_read");
-    // 快適
-    const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
-    const hash = {
-        atui: atuiOpinion.data,
-        samui: samuiOpinion.data,
-        kaiteki: kaitekiOpinion.data
-    };
-    window.alert('eeeeeeeeeeeee');
-    window.alert(hash.atui);
-    const atuiHexadecimal = exchangeToHexadecimal(hash.atui);
-    const samuiHexadecimal = exchangeToHexadecimal(hash.samui);
-    const kaitekiHexadecimal = exchangeToHexadecimal(hash.kaiteki);
-    window.alert(atuiHexadecimal);
-    window.ledCharacteristic.writeValue(
-        new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
-    ).catch(error => {
-        window.alert('エラーです。');
-    })
+    var step;
+    for (step = 0; step < 5; step++) {
+        // 暑い
+        const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
+        // 寒い
+        const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=cold_read");
+        // 快適
+        const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
+        const atuiHexadecimal = exchangeToHexadecimal(atuiOpinion.data);
+        const samuiHexadecimal = exchangeToHexadecimal(samuiOpinion.data);
+        const kaitekiHexadecimal = exchangeToHexadecimal(kaitekiOpinion.data);
+        window.ledCharacteristic.writeValue(
+            new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
+        ).catch(error => {
+            window.alert('エラーです。');
+        });    
+    }
 }
 
 // 16進数に変換する関数
 function exchangeToHexadecimal(userOpinion) {
-    window.alert("sssssssssss");
     // userOpinionには、10進数の整数が入っている
     return '0x' + (('0000' + userOpinion.toString(16).toString(16).toUpperCase()).substr(-4));
     

@@ -78,14 +78,18 @@ class writeCallback: public BLECharacteristicCallbacks {
         ledNotifyCharacteristic->setValue(ledClickCount);
         ledNotifyCharacteristic->notify();
       }
-      if ((char)value[0] <= 1) {
-        digitalWrite(LED1, (char)value[0]);
+      if ((char)value[1] <= 1) {
+        int num = (char)value[1];
+        Serial.println(num);
+        Serial.print("LED オン");
+        digitalWrite(LED1, (char)value[1]);
       }
     } else {
 //       暑いなどの票数を送られてきた。
       int atuiClickCount = (char)value[0];
       int samuiClickCount = (char)value[1];
       int kaitekiClickCount = (char)value[2];
+      int totalClickCount = atuiClickCount + samuiClickCount + kaitekiClickCount;
   
       Serial.print("暑いの総カウント数");
       Serial.println(atuiClickCount);
@@ -93,6 +97,8 @@ class writeCallback: public BLECharacteristicCallbacks {
       Serial.println(samuiClickCount);
       Serial.print("快適の総カウント数");
       Serial.println(kaitekiClickCount);
+      Serial.print("合計カウント数");
+      Serial.println(totalClickCount);
     }
   }
 };
