@@ -89,6 +89,7 @@ class writeCallback: public BLECharacteristicCallbacks {
       int atuiClickCount = (char)value[0];
       int samuiClickCount = (char)value[1];
       int kaitekiClickCount = (char)value[2];
+      int sosClick = (char)value[3];
       int totalClickCount = atuiClickCount + samuiClickCount + kaitekiClickCount;
   
       Serial.print("暑いの総カウント数");
@@ -99,6 +100,12 @@ class writeCallback: public BLECharacteristicCallbacks {
       Serial.println(kaitekiClickCount);
       Serial.print("合計カウント数");
       Serial.println(totalClickCount);
+      Serial.print("sosクリック");
+      Serial.println(sosClick);
+//      sosを鳴らすとき
+      if (sosClick == 1) {
+        digitalWrite(LED1, sosClick);
+      }
     }
   }
 };

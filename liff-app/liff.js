@@ -331,11 +331,13 @@ async function getUserOpinion () {
         const samuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=cold_read");
         // 快適
         const kaitekiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=comfortable_read");
+        const sosOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=sos_read");
         const atuiHexadecimal = exchangeToHexadecimal(atuiOpinion.data);
         const samuiHexadecimal = exchangeToHexadecimal(samuiOpinion.data);
         const kaitekiHexadecimal = exchangeToHexadecimal(kaitekiOpinion.data);
+        const sosHexadecimal = exchangeToHexadecimal(sosOpinion.data);
         window.ledCharacteristic.writeValue(
-            new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal])
+            new Uint8Array([atuiHexadecimal, samuiHexadecimal, kaitekiHexadecimal, sosHexadecimal])
         ).catch(error => {
             window.alert('エラーです。');
         });    
