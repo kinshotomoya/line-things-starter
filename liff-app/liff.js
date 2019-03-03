@@ -324,7 +324,7 @@ function liffGetAndWriteUserOpinionToDevice() {
 
 async function getUserOpinion () {
     var step;
-    for (step = 0; step < 5; step++) {
+    for (step = 0; step < 10; step++) {
         // 暑い
         const atuiOpinion = await axios.get("https://script.google.com/macros/s/AKfycbwyOx1qqIu0SYBEFWROiUjKNN0Ar_vscxjke41e7-XfYCqsPKtJ/exec?q=hot_read");
         // 寒い
