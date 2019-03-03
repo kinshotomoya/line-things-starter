@@ -319,7 +319,7 @@ function liffToggleDeviceLedState(state) {
 
 function liffGetAndWriteUserOpinionToDevice() {
     // APIで取得したデータをhash形式で保持している
-    setTimeout(async () => { getUserOpinion() }, 100);
+    setTimeout(async () => { getUserOpinion() }, 1);
 }
 
 async function getUserOpinion () {
